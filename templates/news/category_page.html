@@ -1,0 +1,130 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<!-- Category Header -->
+<div class="bn-cat-header" style="margin: -24px -16px 28px; padding: 24px 16px;">
+  <div class="bn-cat-header__label">{% trans "Bo'lim" %}</div>
+  <div class="bn-cat-header__title">{{ page_title }}</div>
+  <div class="bn-cat-header__desc">{{ page_description }}</div>
+  <div class="bn-cat-header__meta">
+    <span><i class="far fa-newspaper"></i> {{ articles|length }} {% trans "ta material" %}</span>
+  </div>
+</div>
+
+{% if featured_article %}
+<div class="bn-layout">
+  <!-- Main content -->
+  <div>
+    <!-- Featured article -->
+    <div class="bn-mb-24">
+      <a href="{{ featured_article.get_absolute_url }}" class="bn-card-feature">
+        <div class="bn-card-feature__img">
+          {% if featured_article.image %}
+            <img src="{{ featured_article.image.url }}" alt="{{ featured_article.title }}">
+          {% else %}
+            <img src="https://placehold.co/800x450/111827/ffffff?text={{ category_name }}" alt="{{ featured_article.title }}">
+          {% endif %}
+        </div>
+        <div class="bn-card-feature__body">
+          <span class="bn-card-feature__cat">{{ category_name }}</span>
+          <div class="bn-card-feature__title">{{ featured_article.title|truncatewords:16 }}</div>
+          <div class="bn-card-feature__excerpt">{{ featured_article.body|truncatewords:40 }}</div>
+          <div class="bn-card-feature__meta">
+            <span><i class="far fa-clock"></i> {{ featured_article.publish_time|date:"j F Y, H:i" }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Secondary articles -->
+    {% if secondary_articles %}
+    <div class="bn-section-head">
+      <h2>{{ page_title }}</h2>
+    </div>
+    <div class="bn-grid-2 bn-mb-24">
+      {% for s in secondary_articles %}
+      <a href="{{ s.get_absolute_url }}" class="bn-card-h">
+        <div class="bn-card-h__img">
+          {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+          {% else %}<img src="https://placehold.co/120x90/111827/ffffff?text={{ category_name }}" alt="{{ s.title }}">{% endif %}
+        </div>
+        <div class="bn-card-h__body">
+          <span class="bn-card-h__cat">{{ category_name }}</span>
+          <div class="bn-card-h__title">{{ s.title|truncatewords:9 }}</div>
+          <div class="bn-card-h__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- More articles -->
+    {% if more_articles %}
+    <div class="bn-section-head">
+      <h2>{% trans "Yana materiallar" %}</h2>
+      <span style="font-size:.8rem;color:#6b7280">{{ articles|length }} {% trans "ta maqola" %}</span>
+    </div>
+    <div class="bn-grid-3 bn-mb-24">
+      {% for s in more_articles %}
+      <a href="{{ s.get_absolute_url }}" class="bn-card-v">
+        <div class="bn-card-v__img">
+          {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+          {% else %}<img src="https://placehold.co/400x250/111827/ffffff?text={{ category_name }}" alt="{{ s.title }}">{% endif %}
+        </div>
+        <div class="bn-card-v__body">
+          <span class="bn-card-v__cat">{{ category_name }}</span>
+          <div class="bn-card-v__title">{{ s.title|truncatewords:9 }}</div>
+          <div class="bn-card-v__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="bn-sidebar">
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-newspaper"></i> {% trans "Boshqa bo'limlardan" %}</div>
+      <div class="bn-widget__body" style="padding:8px 16px;">
+        {% for s in latest_headlines %}
+        <div class="bn-feed-item">
+          <div class="bn-feed-item__dot"></div>
+          <div>
+            <div class="bn-feed-item__title"><a href="{{ s.get_absolute_url }}">{{ s.title|truncatewords:9 }}</a></div>
+            <div class="bn-feed-item__time">{{ s.category.name }} · {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-th-large"></i> {% trans "Bo'limlar" %}</div>
+      <div class="bn-widget__body">
+        <div class="bn-cat-list">
+          <a href="{% url 'Uzbekistan' %}">{% trans "O'zbekiston" %}</a>
+          <a href="{% url 'Jahon' %}">{% trans "Jahon" %}</a>
+          <a href="{% url 'Sport' %}">{% trans "Sport" %}</a>
+          <a href="{% url 'Fan_texnika' %}">{% trans "Fan va texnika" %}</a>
+          <a href="{% url 'Iqtisodiyot' %}">{% trans "Iqtisodiyot" %}</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% else %}
+<div class="bn-state">
+  <div class="bn-state__icon bn-state__icon--empty"><i class="far fa-newspaper"></i></div>
+  <div class="bn-state__title">{% trans "Bu bo'lim hozircha bo'sh" %}</div>
+  <div class="bn-state__text">{% trans "Tez orada yangi materiallar joylanadi." %}</div>
+  <div class="bn-state__actions">
+    <a href="{% url 'homepage' %}" class="bn-btn bn-btn--primary">{% trans "Bosh sahifaga qaytish" %}</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

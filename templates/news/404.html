@@ -1,0 +1,15 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+{% block title %}404 — {% trans "Sahifa topilmadi" %}{% endblock %}
+{% block content %}
+<div class="bn-state" style="margin:60px auto;">
+  <div class="bn-state__icon bn-state__icon--error" style="font-size:4rem">404</div>
+  <div class="bn-state__title">{% trans "Sahifa topilmadi" %}</div>
+  <div class="bn-state__text">{% trans "Siz qidirgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin." %}</div>
+  <div class="bn-state__actions">
+    <a href="{% url 'homepage' %}" class="bn-btn bn-btn--primary">
+      <i class="fas fa-home"></i> {% trans "Bosh sahifaga qaytish" %}
+    </a>
+  </div>
+</div>
+{% endblock %}

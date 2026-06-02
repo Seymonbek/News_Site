@@ -1,0 +1,26 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Natija topilmadi" %}{% endblock %}
+
+{% block content %}
+<div class="bn-state" style="margin:60px auto;">
+  <div class="bn-state__icon bn-state__icon--empty">
+    <i class="fas fa-search-minus"></i>
+  </div>
+  <div class="bn-state__title">{% trans "Natija topilmadi" %}</div>
+  <div class="bn-state__text">
+    {% if query %}
+      "{{ query }}" {% trans "so'rovi bo'yicha hech narsa topilmadi. Boshqa kalit so'z bilan urinib ko'ring." %}
+    {% else %}
+      {% trans "Qidiruv so'zi kiritilmadi." %}
+    {% endif %}
+  </div>
+  <div class="bn-state__actions">
+    <a href="{% url 'homepage' %}" class="bn-btn bn-btn--primary">
+      <i class="fas fa-home"></i> {% trans "Bosh sahifaga qaytish" %}
+    </a>
+    <a href="{% url 'contact-us' %}" class="bn-btn bn-btn--outline">{% trans "Biz bilan bog'lanish" %}</a>
+  </div>
+</div>
+{% endblock %}

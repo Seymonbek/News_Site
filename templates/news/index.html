@@ -1,0 +1,294 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Bosh sahifa" %}{% endblock %}
+
+{% block content %}
+
+{% if not news_list %}
+<div class="bn-state" style="margin: 60px auto;">
+  <div class="bn-state__icon bn-state__icon--empty"><i class="far fa-newspaper"></i></div>
+  <div class="bn-state__title">{% trans "Yangiliklar hali joylanmagan" %}</div>
+  <div class="bn-state__text">{% trans "Tez orada yangiliklar paydo bo'ladi." %}</div>
+  <div class="bn-state__actions">
+    <a href="{% url 'contact-us' %}" class="bn-btn bn-btn--primary">{% trans "Aloqa" %}</a>
+  </div>
+</div>
+{% else %}
+
+<!-- ===== HERO SECTION ===== -->
+<div class="bn-mb-32">
+  <div class="bn-grid-hero">
+    <!-- Feature story -->
+    {% with story=news_list.0 %}
+    <a href="{{ story.get_absolute_url }}" class="bn-card-feature">
+      <div class="bn-card-feature__img">
+        {% if story.image %}
+          <img src="{{ story.image.url }}" alt="{{ story.title }}">
+        {% else %}
+          <img src="https://placehold.co/800x450/111827/ffffff?text=BizNews" alt="{{ story.title }}">
+        {% endif %}
+      </div>
+      <div class="bn-card-feature__body">
+        <span class="bn-card-feature__cat">{{ story.category.name }}</span>
+        <div class="bn-card-feature__title">{{ story.title|truncatewords:18 }}</div>
+        <div class="bn-card-feature__excerpt">{{ story.body|truncatewords:40 }}</div>
+        <div class="bn-card-feature__meta">
+          <span><i class="far fa-clock"></i> {{ story.publish_time|date:"j F Y, H:i" }}</span>
+        </div>
+      </div>
+    </a>
+    {% endwith %}
+
+    <!-- Sidebar: latest feed -->
+    <div class="bn-sidebar">
+      <div class="bn-widget">
+        <div class="bn-widget__head"><i class="fas fa-stream"></i> {% trans "So'nggi yangiliklar" %}</div>
+        <div class="bn-widget__body" style="padding: 8px 16px;">
+          {% for story in lasted_news|slice:":8" %}
+          <div class="bn-feed-item">
+            <div class="bn-feed-item__dot"></div>
+            <div>
+              <div class="bn-feed-item__title"><a href="{{ story.get_absolute_url }}">{{ story.title|truncatewords:10 }}</a></div>
+              <div class="bn-feed-item__time"><i class="far fa-clock"></i> {{ story.publish_time|date:"j F, H:i" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Categories widget -->
+      <div class="bn-widget">
+        <div class="bn-widget__head"><i class="fas fa-th-large"></i> {% trans "Bo'limlar" %}</div>
+        <div class="bn-widget__body">
+          <div class="bn-cat-list">
+            <a href="{% url 'Uzbekistan' %}">{% trans "O'zbekiston" %}</a>
+            <a href="{% url 'Jahon' %}">{% trans "Jahon" %}</a>
+            <a href="{% url 'Sport' %}">{% trans "Sport" %}</a>
+            <a href="{% url 'Fan_texnika' %}">{% trans "Fan va texnika" %}</a>
+            <a href="{% url 'Iqtisodiyot' %}">{% trans "Iqtisodiyot" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOP STORIES ROW ===== -->
+<div class="bn-mb-32">
+  <div class="bn-section-head">
+    <h2>{% trans "Asosiy yangiliklar" %}</h2>
+  </div>
+  <div class="bn-grid-4">
+    {% for story in news_list|slice:"1:5" %}
+    <a href="{{ story.get_absolute_url }}" class="bn-card-v">
+      <div class="bn-card-v__img">
+        {% if story.image %}
+          <img src="{{ story.image.url }}" alt="{{ story.title }}">
+        {% else %}
+          <img src="https://placehold.co/400x250/111827/ffffff?text={{ story.category.name }}" alt="{{ story.title }}">
+        {% endif %}
+      </div>
+      <div class="bn-card-v__body">
+        <span class="bn-card-v__cat">{{ story.category.name }}</span>
+        <div class="bn-card-v__title">{{ story.title|truncatewords:10 }}</div>
+        <div class="bn-card-v__meta"><i class="far fa-clock"></i> {{ story.publish_time|date:"j F, H:i" }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ===== O'ZBEKISTON + JAHON ===== -->
+<div class="bn-layout bn-mb-32">
+  <div>
+    <!-- O'zbekiston -->
+    <div class="bn-mb-32">
+      <div class="bn-section-head">
+        <h2>{% trans "O'zbekiston" %}</h2>
+        <a href="{% url 'Uzbekistan' %}">{% trans "Hammasini ko'rish" %} <i class="fas fa-arrow-right"></i></a>
+      </div>
+      {% if local_news %}
+      <div style="margin-bottom:16px">
+        {% with s=local_news.0 %}
+        <a href="{{ s.get_absolute_url }}" class="bn-card-feature">
+          <div class="bn-card-feature__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/700x380/111827/ffffff?text=O'zbekiston" alt="{{ s.title }}">{% endif %}
+          </div>
+          <div class="bn-card-feature__body">
+            <span class="bn-card-feature__cat">{% trans "O'zbekiston" %}</span>
+            <div class="bn-card-feature__title">{{ s.title|truncatewords:14 }}</div>
+            <div class="bn-card-feature__excerpt">{{ s.body|truncatewords:30 }}</div>
+            <div class="bn-card-feature__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F Y, H:i" }}</div>
+          </div>
+        </a>
+        {% endwith %}
+      </div>
+      <div class="bn-grid-2">
+        {% for s in local_news|slice:"1:5" %}
+        <a href="{{ s.get_absolute_url }}" class="bn-card-h">
+          <div class="bn-card-h__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/120x90/111827/ffffff?text=..." alt="{{ s.title }}">{% endif %}
+          </div>
+          <div class="bn-card-h__body">
+            <span class="bn-card-h__cat">{% trans "O'zbekiston" %}</span>
+            <div class="bn-card-h__title">{{ s.title|truncatewords:9 }}</div>
+            <div class="bn-card-h__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Jahon -->
+    <div class="bn-mb-32">
+      <div class="bn-section-head">
+        <h2>{% trans "Jahon" %}</h2>
+        <a href="{% url 'Jahon' %}">{% trans "Hammasini ko'rish" %} <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="bn-grid-3">
+        {% for s in world_news|slice:":3" %}
+        <a href="{{ s.get_absolute_url }}" class="bn-card-v">
+          <div class="bn-card-v__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/400x250/111827/ffffff?text=Jahon" alt="{{ s.title }}">{% endif %}
+          </div>
+          <div class="bn-card-v__body">
+            <span class="bn-card-v__cat">{% trans "Jahon" %}</span>
+            <div class="bn-card-v__title">{{ s.title|truncatewords:9 }}</div>
+            <div class="bn-card-v__excerpt">{{ s.body|truncatewords:18 }}</div>
+            <div class="bn-card-v__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sport -->
+    <div class="bn-mb-32">
+      <div class="bn-section-head">
+        <h2>{% trans "Sport" %}</h2>
+        <a href="{% url 'Sport' %}">{% trans "Hammasini ko'rish" %} <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="bn-grid-2">
+        {% for s in sport_news|slice:":4" %}
+        <a href="{{ s.get_absolute_url }}" class="bn-card-h">
+          <div class="bn-card-h__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/120x90/111827/ffffff?text=Sport" alt="{{ s.title }}">{% endif %}
+          </div>
+          <div class="bn-card-h__body">
+            <span class="bn-card-h__cat">{% trans "Sport" %}</span>
+            <div class="bn-card-h__title">{{ s.title|truncatewords:9 }}</div>
+            <div class="bn-card-h__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Fan-texnika + Iqtisodiyot -->
+    <div class="bn-grid-2 bn-mb-32">
+      <div>
+        <div class="bn-section-head">
+          <h2>{% trans "Fan va texnika" %}</h2>
+          <a href="{% url 'Fan_texnika' %}">{% trans "Ko'rish" %} <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          {% for s in techno_news|slice:":4" %}
+          <div class="bn-list-item">
+            <div class="bn-list-item__num">{{ forloop.counter }}</div>
+            <div class="bn-list-item__body">
+              <div class="bn-list-item__cat">{% trans "Fan va texnika" %}</div>
+              <div class="bn-list-item__title"><a href="{{ s.get_absolute_url }}">{{ s.title|truncatewords:10 }}</a></div>
+              <div class="bn-list-item__meta">{{ s.publish_time|date:"j F, H:i" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <div class="bn-section-head">
+          <h2>{% trans "Iqtisodiyot" %}</h2>
+          <a href="{% url 'Iqtisodiyot' %}">{% trans "Ko'rish" %} <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          {% for s in economy|slice:":4" %}
+          <div class="bn-list-item">
+            <div class="bn-list-item__num">{{ forloop.counter }}</div>
+            <div class="bn-list-item__body">
+              <div class="bn-list-item__cat">{% trans "Iqtisodiyot" %}</div>
+              <div class="bn-list-item__title"><a href="{{ s.get_absolute_url }}">{{ s.title|truncatewords:10 }}</a></div>
+              <div class="bn-list-item__meta">{{ s.publish_time|date:"j F, H:i" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Jamiyat -->
+    {% if jamiyat %}
+    <div class="bn-mb-32">
+      <div class="bn-section-head">
+        <h2>{% trans "Jamiyat" %}</h2>
+      </div>
+      <div class="bn-grid-3">
+        {% for s in jamiyat %}
+        <a href="{{ s.get_absolute_url }}" class="bn-card-v">
+          <div class="bn-card-v__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/400x250/111827/ffffff?text=Jamiyat" alt="{{ s.title }}">{% endif %}
+          </div>
+          <div class="bn-card-v__body">
+            <span class="bn-card-v__cat">{{ s.category.name }}</span>
+            <div class="bn-card-v__title">{{ s.title|truncatewords:9 }}</div>
+            <div class="bn-card-v__meta"><i class="far fa-clock"></i> {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ===== RIGHT SIDEBAR ===== -->
+  <aside class="bn-sidebar">
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-fire"></i> {% trans "Mashhur yangiliklar" %}</div>
+      <div class="bn-widget__body" style="padding:8px 16px;">
+        {% for s in lasted_news|slice:":5" %}
+        <div class="bn-popular-item">
+          <div class="bn-popular-item__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/72x54/111827/ffffff?text=..." alt="{{ s.title }}">{% endif %}
+          </div>
+          <div>
+            <div class="bn-popular-item__title"><a href="{{ s.get_absolute_url }}">{{ s.title|truncatewords:8 }}</a></div>
+            <div class="bn-popular-item__meta">{{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-th-large"></i> {% trans "Bo'limlar" %}</div>
+      <div class="bn-widget__body">
+        <div class="bn-cat-list">
+          <a href="{% url 'Uzbekistan' %}">{% trans "O'zbekiston" %}</a>
+          <a href="{% url 'Jahon' %}">{% trans "Jahon" %}</a>
+          <a href="{% url 'Sport' %}">{% trans "Sport" %}</a>
+          <a href="{% url 'Fan_texnika' %}">{% trans "Fan va texnika" %}</a>
+          <a href="{% url 'Iqtisodiyot' %}">{% trans "Iqtisodiyot" %}</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% endif %}
+{% endblock %}

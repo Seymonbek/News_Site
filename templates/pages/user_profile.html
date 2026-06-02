@@ -1,0 +1,70 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Profil" %}: {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="bn-section-head">
+  <h2><i class="far fa-user"></i> {% trans "Foydalanuvchi profili" %}</h2>
+</div>
+
+<div class="bn-profile-grid">
+  <!-- Profile card -->
+  <div class="bn-profile-card">
+    <div class="bn-profile-card__avatar">
+      {% if profile.photo %}
+        <img src="{{ profile.photo.url }}" alt="{{ user.username }}">
+      {% else %}
+        {{ user.username|first|upper }}
+      {% endif %}
+    </div>
+    <div class="bn-profile-card__name">{{ user.get_full_name|default:user.username }}</div>
+    <div class="bn-profile-card__username">@{{ user.username }}</div>
+    <div class="bn-profile-card__actions">
+      <a href="{% url 'edit_user' %}" class="bn-btn bn-btn--primary" style="justify-content:center">
+        <i class="fas fa-user-edit"></i> {% trans "Ma'lumotlarni o'zgartirish" %}
+      </a>
+      <a href="{% url 'password_change' %}" class="bn-btn bn-btn--outline" style="justify-content:center">
+        <i class="fas fa-key"></i> {% trans "Parolni o'zgartirish" %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Info table -->
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:24px 28px;box-shadow:0 1px 3px rgba(0,0,0,.1)">
+    <div style="font-size:1rem;font-weight:700;color:#111827;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #111827">
+      {% trans "Shaxsiy ma'lumotlar" %}
+    </div>
+    <table class="bn-data-table">
+      <tr>
+        <td>{% trans "Username" %}</td>
+        <td>{{ user.username }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Ism" %}</td>
+        <td>{{ user.first_name|default:"—" }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Familya" %}</td>
+        <td>{{ user.last_name|default:"—" }}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{{ user.email|default:"—" }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Tug'ilgan sana" %}</td>
+        <td>{{ profile.date_of_birth|default:"—" }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Telefon" %}</td>
+        <td>{{ profile.phone|default:"—" }}</td>
+      </tr>
+      <tr>
+        <td>{% trans "A'zolik sanasi" %}</td>
+        <td>{{ user.date_joined|date:"j F Y" }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+{% endblock %}

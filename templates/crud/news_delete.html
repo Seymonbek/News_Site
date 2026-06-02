@@ -1,0 +1,32 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "O'chirish" %}: {{ object.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width:520px;margin:60px auto;">
+  <div style="background:#fff;border:1px solid #fca5a5;border-radius:8px;padding:32px;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,.07)">
+    <div style="width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.5rem;color:#b91c1c">
+      <i class="fas fa-trash-alt"></i>
+    </div>
+    <h1 style="font-size:1.4rem;font-weight:700;color:#111827;margin-bottom:10px">
+      {% trans "Yangilikni o'chirish" %}
+    </h1>
+    <p style="font-size:.9rem;color:#6b7280;margin-bottom:8px">
+      <strong style="color:#111827">{{ object.title }}</strong>
+    </p>
+    <p style="font-size:.875rem;color:#9ca3af;margin-bottom:28px">
+      {% trans "Ushbu amal qaytarib bo'lmaydi. Davom etishni xohlaysizmi?" %}
+    </p>
+    <form method="post" style="display:flex;justify-content:center;gap:12px;">
+      {% csrf_token %}
+      <button type="submit" class="bn-btn bn-btn--primary" style="background:#b91c1c">
+        <i class="fas fa-trash"></i> {% trans "Ha, o'chirish" %}
+      </button>
+      <a href="{{ object.get_absolute_url }}" class="bn-btn bn-btn--outline">
+        {% trans "Bekor qilish" %}
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}

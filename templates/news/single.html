@@ -1,0 +1,146 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+{% load hitcount_tags %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block content %}
+<div class="bn-layout">
+  <!-- Article -->
+  <article class="bn-article">
+    <span class="bn-article__cat">{{ news.category.name }}</span>
+    <h1 class="bn-article__title">{{ news.title }}</h1>
+    <div class="bn-article__meta">
+      <span><i class="far fa-clock"></i> {{ news.publish_time|date:"j F Y, H:i" }}</span>
+      <span><i class="far fa-eye"></i> {% get_hit_count for news %} {% trans "marta o'qildi" %}</span>
+      <span><i class="far fa-comment"></i> {{ comments_count }} {% trans "izoh" %}</span>
+      <span><i class="fas fa-tag"></i> {{ news.category.name }}</span>
+    </div>
+
+    {% if news.image %}
+    <div class="bn-article__hero">
+      <img src="{{ news.image.url }}" alt="{{ news.title }}">
+    </div>
+    {% endif %}
+
+    <div class="bn-article__body">
+      {{ news.body|linebreaksbr }}
+    </div>
+
+    {% if request.user.is_authenticated and request.user.is_superuser %}
+    <div class="bn-article__actions">
+      <a href="{% url 'news_create' %}" class="bn-article__action-btn bn-article__action-btn--create">
+        <i class="fas fa-plus"></i> {% trans "Yangilik qo'shish" %}
+      </a>
+      <a href="{% url 'news_update' news.slug %}" class="bn-article__action-btn bn-article__action-btn--edit">
+        <i class="fas fa-pen"></i> {% trans "Tahrirlash" %}
+      </a>
+      <a href="{% url 'news_delete' news.slug %}" class="bn-article__action-btn bn-article__action-btn--delete">
+        <i class="fas fa-trash"></i> {% trans "O'chirish" %}
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- Comments section -->
+    <div class="bn-comments">
+      <div class="bn-comments__head">
+        <i class="far fa-comments"></i> {% trans "Izohlar" %}
+        <span>{{ comments_count }}</span>
+      </div>
+
+      {% if comments %}
+        {% for c in comments %}
+        <div class="bn-comment">
+          <div class="bn-comment__avatar">{{ c.user.username|first|upper }}</div>
+          <div class="bn-comment__body">
+            <span class="bn-comment__author">{{ c.user.username }}</span>
+            <span class="bn-comment__time">{{ c.created_time|date:"j F Y, H:i" }}</span>
+            <div class="bn-comment__text">{{ c.body }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="bn-comment-empty">
+          <i class="far fa-comment" style="font-size:1.5rem;margin-bottom:8px;display:block;color:#9ca3af"></i>
+          {% trans "Hozircha izoh qoldirilmagan. Birinchi bo'lib fikringizni yozing." %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Comment form -->
+    <div class="bn-mt-24">
+      <div class="bn-form__title"><i class="far fa-pen-to-square"></i> {% trans "Izoh qoldirish" %}</div>
+      {% if user.is_authenticated %}
+      <form method="post" class="bn-form bn-mt-24">
+        {% csrf_token %}
+        <div class="bn-field">
+          <label for="id_body">{% trans "Izohingiz" %}</label>
+          <textarea id="id_body" name="body" placeholder="{% trans 'Yangilik bo\'yicha fikringizni yozing...' %}" required></textarea>
+          {% if comment_form.body.errors %}
+            <div class="bn-field__error">{{ comment_form.body.errors|striptags }}</div>
+          {% endif %}
+        </div>
+        <div class="bn-form__actions">
+          <button type="submit" class="bn-btn bn-btn--primary">
+            <i class="far fa-paper-plane"></i> {% trans "Yuborish" %}
+          </button>
+        </div>
+      </form>
+      {% else %}
+      <div class="bn-notice bn-notice--info bn-mt-24">
+        <i class="fas fa-info-circle"></i>
+        <span>
+          {% trans "Izoh qoldirish uchun" %}
+          <a href="{% url 'login' %}" style="font-weight:700;color:#1d4ed8">{% trans "tizimga kiring" %}</a>
+          {% trans "yoki" %}
+          <a href="{% url 'user_register' %}" style="font-weight:700;color:#1d4ed8">{% trans "ro'yxatdan o'ting" %}</a>.
+        </span>
+      </div>
+      {% endif %}
+    </div>
+  </article>
+
+  <!-- Sidebar -->
+  <aside class="bn-sidebar">
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-newspaper"></i> {% trans "Tavsiya etamiz" %}</div>
+      <div class="bn-widget__body" style="padding:8px 16px;">
+        {% for s in recomend_news %}
+        <div class="bn-popular-item">
+          <div class="bn-popular-item__img">
+            {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.title }}">
+            {% else %}<img src="https://placehold.co/72x54/111827/ffffff?text=..." alt="{{ s.title }}">{% endif %}
+          </div>
+          <div>
+            <div class="bn-popular-item__title"><a href="{{ s.get_absolute_url }}">{{ s.title|truncatewords:8 }}</a></div>
+            <div class="bn-popular-item__meta">{{ s.category.name }} · {{ s.publish_time|date:"j F, H:i" }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-th-large"></i> {% trans "Bo'limlar" %}</div>
+      <div class="bn-widget__body">
+        <div class="bn-cat-list">
+          <a href="{% url 'Uzbekistan' %}">{% trans "O'zbekiston" %}</a>
+          <a href="{% url 'Jahon' %}">{% trans "Jahon" %}</a>
+          <a href="{% url 'Sport' %}">{% trans "Sport" %}</a>
+          <a href="{% url 'Fan_texnika' %}">{% trans "Fan va texnika" %}</a>
+          <a href="{% url 'Iqtisodiyot' %}">{% trans "Iqtisodiyot" %}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-search"></i> {% trans "O'xshash maqolalar" %}</div>
+      <div class="bn-widget__body">
+        <a href="{% url 'search_results' %}?q={{ news.category.name }}" class="bn-btn bn-btn--primary" style="width:100%;justify-content:center;">
+          <i class="fas fa-search"></i> {{ news.category.name }} {% trans "bo'yicha qidirish" %}
+        </a>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

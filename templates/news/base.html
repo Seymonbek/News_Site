@@ -1,0 +1,234 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'uz' }}">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}BizNews{% endblock %} — BizNews</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BizNews — O'zbekistonning tezkor yangiliklar portali">
+  <link rel="shortcut icon" href="{% static 'img/title.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="{% static 'css/news.css' %}" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<a class="bn-skip" href="#bn-main">{% trans "Asosiy kontentga o'tish" %}</a>
+
+<!-- ===== TICKER ===== -->
+{% if lasted_news %}
+<div class="bn-ticker" role="marquee" aria-label="Tezkor yangiliklar">
+  <div class="bn-ticker__label">
+    <i class="fas fa-bolt"></i> {% trans "Tezkor" %}
+  </div>
+  <div class="bn-ticker__track">
+    <div class="bn-ticker__inner">
+      {% for n in lasted_news|slice:":8" %}
+        <span class="bn-ticker__item"><a href="{{ n.get_absolute_url }}">{{ n.title|truncatewords:10 }}</a></span>
+      {% endfor %}
+      {% for n in lasted_news|slice:":8" %}
+        <span class="bn-ticker__item"><a href="{{ n.get_absolute_url }}">{{ n.title|truncatewords:10 }}</a></span>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ===== TOP BAR ===== -->
+<div class="bn-topbar">
+  <div class="bn-container">
+    <div class="bn-topbar__inner">
+      <span class="bn-topbar__date">
+        <i class="far fa-calendar-alt"></i>
+        {% now "j F Y" %} &nbsp;|&nbsp; <i class="far fa-clock"></i> {% now "H:i" %}
+      </span>
+      <div class="bn-topbar__actions">
+        <a class="bn-topbar__link" href="{% url 'contact-us' %}">
+          <i class="far fa-envelope"></i> {% trans "Aloqa" %}
+        </a>
+        {% if request.user.is_authenticated %}
+          <a class="bn-topbar__link" href="{% url 'user_profile' %}">
+            <i class="far fa-user"></i> {{ request.user.username }}
+          </a>
+          <form method="post" action="{% url 'logout' %}" style="margin:0">
+            {% csrf_token %}
+            <button class="bn-topbar__btn bn-topbar__btn--logout" type="submit">
+              <i class="fas fa-sign-out-alt"></i> {% trans "Chiqish" %}
+            </button>
+          </form>
+        {% else %}
+          <a class="bn-topbar__btn bn-topbar__btn--login" href="{% url 'login' %}">
+            <i class="fas fa-sign-in-alt"></i> {% trans "Kirish" %}
+          </a>
+          <a class="bn-topbar__btn bn-topbar__btn--login" href="{% url 'user_register' %}" style="margin-left:4px">
+            {% trans "Ro'yxatdan o'tish" %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BRAND ROW ===== -->
+<div class="bn-brand">
+  <div class="bn-container">
+    <div class="bn-brand__inner">
+      <div>
+        <a href="{% url 'homepage' %}" class="bn-brand__logo">Biz<span>News</span></a>
+        <div class="bn-brand__tagline">{% trans "O'zbekistonning tezkor yangiliklar portali" %}</div>
+      </div>
+
+      <form action="{% url 'search_results' %}" method="get" class="bn-brand__search" role="search">
+        <input type="search" name="q" placeholder="{% trans 'Yangilik qidirish...' %}" aria-label="{% trans 'Qidiruv' %}">
+        <button type="submit" aria-label="{% trans 'Qidirish' %}">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+
+      <form action="{% url 'set_language' %}" method="post" class="bn-brand__lang">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% load i18n %}
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% get_language_info_list for LANGUAGES as languages %}
+        <select name="language" aria-label="{% trans 'Til tanlang' %}">
+          {% for lang in languages %}
+            <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>
+              {{ lang.name_local }}
+            </option>
+          {% endfor %}
+        </select>
+        <button type="submit">{% trans "O'zgartir" %}</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN NAV ===== -->
+<nav class="bn-nav" role="navigation" aria-label="Asosiy menyu">
+  <div class="bn-container">
+    <div class="bn-nav__inner">
+      <a href="{% url 'homepage' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'homepage' %}is-active{% endif %}">
+        <i class="fas fa-home"></i> {% trans "Bosh sahifa" %}
+      </a>
+      <a href="{% url 'Uzbekistan' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'Uzbekistan' %}is-active{% endif %}">
+        {% trans "O'zbekiston" %}
+      </a>
+      <a href="{% url 'Jahon' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'Jahon' %}is-active{% endif %}">
+        {% trans "Jahon" %}
+      </a>
+      <a href="{% url 'Sport' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'Sport' %}is-active{% endif %}">
+        {% trans "Sport" %}
+      </a>
+      <a href="{% url 'Fan_texnika' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'Fan_texnika' %}is-active{% endif %}">
+        {% trans "Fan va texnika" %}
+      </a>
+      <a href="{% url 'Iqtisodiyot' %}"
+         class="bn-nav__link {% if request.resolver_match.url_name == 'Iqtisodiyot' %}is-active{% endif %}">
+        {% trans "Iqtisodiyot" %}
+      </a>
+      {% if request.user.is_authenticated and request.user.is_superuser %}
+        <a href="{% url 'news_create' %}" class="bn-nav__link" style="margin-left:auto; color:#f87171">
+          <i class="fas fa-plus"></i> {% trans "Yangilik qo'shish" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="bn-main" class="bn-main">
+  <div class="bn-container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bn-footer" role="contentinfo">
+  <div class="bn-container">
+    <div class="bn-footer__grid">
+      <div>
+        <div class="bn-footer__logo">Biz<span>News</span></div>
+        <p class="bn-footer__desc">
+          {% trans "O'zbekistonning tezkor va ishonchli yangiliklar portali. Mahalliy va xalqaro voqealar, sport, iqtisodiyot va fan-texnika yangiliklari." %}
+        </p>
+        <div class="bn-footer__social">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <div class="bn-footer__col-title">{% trans "Bo'limlar" %}</div>
+        <div class="bn-footer__links">
+          <a href="{% url 'Uzbekistan' %}">{% trans "O'zbekiston" %}</a>
+          <a href="{% url 'Jahon' %}">{% trans "Jahon" %}</a>
+          <a href="{% url 'Sport' %}">{% trans "Sport" %}</a>
+          <a href="{% url 'Fan_texnika' %}">{% trans "Fan va texnika" %}</a>
+          <a href="{% url 'Iqtisodiyot' %}">{% trans "Iqtisodiyot" %}</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="bn-footer__col-title">{% trans "So'nggi yangiliklar" %}</div>
+        <div class="bn-footer__links">
+          {% for n in lasted_news|slice:":5" %}
+            <a href="{{ n.get_absolute_url }}">{{ n.title|truncatewords:7 }}</a>
+          {% empty %}
+            <span style="color:rgba(255,255,255,.4);font-size:.82rem">{% trans "Hozircha yangilik yo'q" %}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div>
+        <div class="bn-footer__col-title">{% trans "Aloqa" %}</div>
+        {% for c in contact_data %}
+          <div class="bn-footer__contact-item"><i class="fas fa-map-marker-alt"></i> {{ c.address }}</div>
+          <div class="bn-footer__contact-item"><i class="fas fa-phone"></i> {{ c.phone }}</div>
+          <div class="bn-footer__contact-item"><i class="fas fa-envelope"></i> {{ c.email }}</div>
+        {% empty %}
+          <div class="bn-footer__contact-item"><i class="fas fa-envelope"></i> info@biznews.uz</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bn-footer__bottom">
+      <span>&copy; {% now "Y" %} BizNews. {% trans "Barcha huquqlar himoyalangan." %}</span>
+      <span>{% trans "O'zbekiston yangiliklar portali" %}</span>
+    </div>
+  </div>
+</footer>
+
+<a href="#" class="bn-back-top" id="backTop" aria-label="Yuqoriga">
+  <i class="fas fa-arrow-up"></i>
+</a>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function(){
+  // Back to top
+  $(window).scroll(function(){
+    if($(this).scrollTop()>200) $('#backTop').addClass('visible');
+    else $('#backTop').removeClass('visible');
+  });
+  $('#backTop').click(function(e){
+    e.preventDefault();
+    $('html,body').animate({scrollTop:0},400);
+  });
+});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Chiqildi" %}{% endblock %}
+{% block content %}
+<div class="bn-state" style="margin:60px auto;">
+  <div class="bn-state__icon bn-state__icon--empty"><i class="fas fa-sign-out-alt"></i></div>
+  <div class="bn-state__title">{% trans "Siz tizimdan chiqdingiz" %}</div>
+  <div class="bn-state__text">{% trans "Qayta kirish uchun login tugmasini bosing." %}</div>
+  <div class="bn-state__actions">
+    <a href="{% url 'login' %}" class="bn-btn bn-btn--primary">
+      <i class="fas fa-sign-in-alt"></i> {% trans "Qayta kirish" %}
+    </a>
+    <a href="{% url 'homepage' %}" class="bn-btn bn-btn--outline">{% trans "Bosh sahifa" %}</a>
+  </div>
+</div>
+{% endblock %}

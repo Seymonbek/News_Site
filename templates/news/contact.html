@@ -1,0 +1,95 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Aloqa" %}{% endblock %}
+
+{% block content %}
+<div class="bn-section-head">
+  <h2><i class="far fa-envelope"></i> {% trans "Biz bilan bog'laning" %}</h2>
+</div>
+
+<div class="bn-layout">
+  <div>
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.1)">
+      {% if success %}
+      <div class="bn-notice bn-notice--success bn-mb-24">
+        <i class="fas fa-check-circle"></i>
+        <span>{% trans "Xabaringiz muvaffaqiyatli yuborildi. Tez orada javob beramiz." %}</span>
+      </div>
+      {% endif %}
+
+      <form method="post" class="bn-form">
+        {% csrf_token %}
+        <div class="bn-form__grid">
+          <div class="bn-field">
+            <label for="id_name">{% trans "Ismingiz" %} *</label>
+            <input id="id_name" type="text" name="name" value="{{ form.name.value|default:'' }}" required placeholder="{% trans 'Ismingiz' %}">
+            {% if form.name.errors %}<div class="bn-field__error">{{ form.name.errors|striptags }}</div>{% endif %}
+          </div>
+          <div class="bn-field">
+            <label for="id_email">Email *</label>
+            <input id="id_email" type="email" name="email" value="{{ form.email.value|default:'' }}" required placeholder="email@example.com">
+            {% if form.email.errors %}<div class="bn-field__error">{{ form.email.errors|striptags }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="bn-field">
+          <label for="id_subject">{% trans "Mavzu" %} *</label>
+          <input id="id_subject" type="text" name="subject" value="{{ form.subject.value|default:'' }}" required placeholder="{% trans 'Xabar mavzusi' %}">
+          {% if form.subject.errors %}<div class="bn-field__error">{{ form.subject.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="bn-field">
+          <label for="id_message">{% trans "Xabar matni" %} *</label>
+          <textarea id="id_message" name="message" required placeholder="{% trans 'Xabaringizni yozing...' %}" style="min-height:140px">{{ form.message.value|default:'' }}</textarea>
+          {% if form.message.errors %}<div class="bn-field__error">{{ form.message.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="bn-form__actions">
+          <button type="submit" class="bn-btn bn-btn--primary">
+            <i class="far fa-paper-plane"></i> {% trans "Xabar yuborish" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <aside class="bn-sidebar">
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-address-book"></i> {% trans "Aloqa ma'lumotlari" %}</div>
+      <div class="bn-widget__body">
+        {% for c in contact_data %}
+          <div style="display:flex;gap:10px;margin-bottom:14px;font-size:.875rem;color:#374151">
+            <i class="fas fa-map-marker-alt" style="color:#d0021b;margin-top:3px;flex-shrink:0"></i>
+            <span>{{ c.address }}</span>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:14px;font-size:.875rem;color:#374151">
+            <i class="fas fa-phone" style="color:#d0021b;flex-shrink:0"></i>
+            <span>{{ c.phone }}</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:.875rem;color:#374151">
+            <i class="fas fa-envelope" style="color:#d0021b;flex-shrink:0"></i>
+            <span>{{ c.email }}</span>
+          </div>
+        {% empty %}
+          <p style="font-size:.875rem;color:#6b7280">{% trans "Aloqa ma'lumotlari kiritilmagan." %}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bn-widget">
+      <div class="bn-widget__head"><i class="fas fa-share-alt"></i> {% trans "Ijtimoiy tarmoqlar" %}</div>
+      <div class="bn-widget__body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#3b5998;color:#fff;border-radius:6px;font-size:.82rem;font-weight:600">
+            <i class="fab fa-facebook-f"></i> Facebook
+          </a>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#0088cc;color:#fff;border-radius:6px;font-size:.82rem;font-weight:600">
+            <i class="fab fa-telegram-plane"></i> Telegram
+          </a>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#e1306c;color:#fff;border-radius:6px;font-size:.82rem;font-weight:600">
+            <i class="fab fa-instagram"></i> Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

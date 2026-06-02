@@ -1,0 +1,39 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Ro'yxatdan o'tish" %}{% endblock %}
+
+{% block content %}
+<div class="bn-auth-wrap">
+  <div style="text-align:center;margin-bottom:24px">
+    <div style="font-size:2rem;font-weight:700;font-family:Georgia,serif;color:#111827;margin-bottom:4px">
+      Biz<span style="color:#d0021b">News</span>
+    </div>
+    <div style="font-size:.82rem;color:#6b7280">{% trans "Yangi hisob yaratish" %}</div>
+  </div>
+
+  <form method="post" class="bn-form">
+    {% csrf_token %}
+    {% for field in user_form %}
+    <div class="bn-field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}
+        <div class="bn-field__help">{{ field.help_text }}</div>
+      {% endif %}
+      {% if field.errors %}
+        <div class="bn-field__error">{{ field.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="bn-btn bn-btn--primary" style="width:100%;justify-content:center;margin-top:4px">
+      <i class="fas fa-user-plus"></i> {% trans "Ro'yxatdan o'tish" %}
+    </button>
+  </form>
+
+  <div class="bn-auth-wrap__footer">
+    {% trans "Hisobingiz bormi?" %}
+    <a href="{% url 'login' %}">{% trans "Tizimga kiring" %}</a>
+  </div>
+</div>
+{% endblock %}

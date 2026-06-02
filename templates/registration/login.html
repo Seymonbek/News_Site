@@ -1,0 +1,44 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Tizimga kirish" %}{% endblock %}
+
+{% block content %}
+<div class="bn-auth-wrap">
+  <div style="text-align:center;margin-bottom:24px">
+    <div style="font-size:2rem;font-weight:700;font-family:Georgia,serif;color:#111827;margin-bottom:4px">
+      Biz<span style="color:#d0021b">News</span>
+    </div>
+    <div style="font-size:.82rem;color:#6b7280">{% trans "Hisobingizga kiring" %}</div>
+  </div>
+
+  {% if form.non_field_errors %}
+  <div class="bn-notice bn-notice--error bn-mb-24">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ form.non_field_errors|striptags }}</span>
+  </div>
+  {% endif %}
+
+  <form method="post" class="bn-form">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="bn-field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <div class="bn-field__error">{{ field.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="bn-btn bn-btn--primary" style="width:100%;justify-content:center;margin-top:4px">
+      <i class="fas fa-sign-in-alt"></i> {% trans "Kirish" %}
+    </button>
+  </form>
+
+  <div class="bn-auth-wrap__footer">
+    <a href="{% url 'password_reset' %}" style="color:#d0021b;font-weight:600">{% trans "Parolni unutdingizmi?" %}</a>
+    <span style="margin:0 8px;color:#d1d5db">|</span>
+    <a href="{% url 'user_register' %}" style="color:#d0021b;font-weight:600">{% trans "Ro'yxatdan o'tish" %}</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Profilni tahrirlash" %}{% endblock %}
+
+{% block content %}
+<div style="max-width:600px;margin:0 auto;">
+  <div class="bn-section-head">
+    <h2><i class="fas fa-user-edit"></i> {% trans "Profilni tahrirlash" %}</h2>
+    <a href="{% url 'user_profile' %}" class="bn-btn bn-btn--outline bn-btn--sm">
+      <i class="fas fa-arrow-left"></i> {% trans "Profilga qaytish" %}
+    </a>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:28px 32px;box-shadow:0 1px 3px rgba(0,0,0,.1)">
+    <form method="post" enctype="multipart/form-data" class="bn-form">
+      {% csrf_token %}
+
+      <div style="font-size:.82rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #e5e7eb">
+        {% trans "Shaxsiy ma'lumotlar" %}
+      </div>
+      {% for field in user_form %}
+      <div class="bn-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="bn-field__error">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div style="font-size:.82rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid #e5e7eb">
+        {% trans "Profil ma'lumotlari" %}
+      </div>
+      {% for field in profile_form %}
+      <div class="bn-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="bn-field__help">{{ field.help_text }}</div>
+        {% endif %}
+        {% if field.errors %}
+          <div class="bn-field__error">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="bn-form__actions" style="margin-top:8px">
+        <button type="submit" class="bn-btn bn-btn--primary">
+          <i class="fas fa-save"></i> {% trans "Saqlash" %}
+        </button>
+        <a href="{% url 'user_profile' %}" class="bn-btn bn-btn--outline">{% trans "Bekor qilish" %}</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

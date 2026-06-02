@@ -1,0 +1,23 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Ro'yxatdan o'tdingiz" %}{% endblock %}
+
+{% block content %}
+<div class="bn-state" style="margin:60px auto;">
+  <div class="bn-state__icon bn-state__icon--success">
+    <i class="fas fa-check-circle"></i>
+  </div>
+  <div class="bn-state__title">{% trans "Hisob muvaffaqiyatli yaratildi!" %}</div>
+  <div class="bn-state__text">
+    {{ new_user.first_name|default:new_user.username }},
+    {% trans "siz BizNews platformasiga qo'shildingiz. Endi tizimga kirishingiz mumkin." %}
+  </div>
+  <div class="bn-state__actions">
+    <a href="{% url 'login' %}" class="bn-btn bn-btn--primary">
+      <i class="fas fa-sign-in-alt"></i> {% trans "Tizimga kirish" %}
+    </a>
+    <a href="{% url 'homepage' %}" class="bn-btn bn-btn--outline">{% trans "Bosh sahifa" %}</a>
+  </div>
+</div>
+{% endblock %}

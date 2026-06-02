@@ -1,0 +1,32 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Qidiruv" %}: {{ query }}{% endblock %}
+
+{% block content %}
+<div class="bn-search-header" style="margin:-24px -16px 28px;padding:24px 16px;">
+  <div class="bn-search-header__query">"<span>{{ query }}</span>"</div>
+  <div class="bn-search-header__count">{{ all_news|length }} {% trans "ta maqola topildi" %}</div>
+</div>
+
+<div class="bn-section-head">
+  <h2>{% trans "Qidiruv natijalari" %}</h2>
+</div>
+
+<div class="bn-grid-3">
+  {% for n in all_news %}
+  <a href="{{ n.get_absolute_url }}" class="bn-card-v">
+    <div class="bn-card-v__img">
+      {% if n.image %}<img src="{{ n.image.url }}" alt="{{ n.title }}">
+      {% else %}<img src="https://placehold.co/400x250/111827/ffffff?text={{ n.category.name }}" alt="{{ n.title }}">{% endif %}
+    </div>
+    <div class="bn-card-v__body">
+      <span class="bn-card-v__cat">{{ n.category.name }}</span>
+      <div class="bn-card-v__title">{{ n.title|truncatewords:10 }}</div>
+      <div class="bn-card-v__excerpt">{{ n.body|truncatewords:20 }}</div>
+      <div class="bn-card-v__meta"><i class="far fa-clock"></i> {{ n.publish_time|date:"j F Y, H:i" }}</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'news/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Admin sahifasi" %}{% endblock %}
+
+{% block content %}
+<div class="bn-section-head">
+  <h2><i class="fas fa-shield-alt"></i> {% trans "Admin foydalanuvchilari" %}</h2>
+  <a href="{% url 'news_create' %}" class="bn-btn bn-btn--primary bn-btn--sm">
+    <i class="fas fa-plus"></i> {% trans "Yangilik qo'shish" %}
+  </a>
+</div>
+
+<div class="bn-table-wrap">
+  <table class="bn-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Username</th>
+        <th>{% trans "Ism" %}</th>
+        <th>{% trans "Familya" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in admin_users %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><strong>{{ u.username }}</strong></td>
+        <td>{{ u.first_name|default:"—" }}</td>
+        <td>{{ u.last_name|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" style="text-align:center;color:#9ca3af">{% trans "Admin foydalanuvchilar topilmadi." %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top:24px;display:flex;gap:12px">
+  <a href="/admin/" class="bn-btn bn-btn--secondary">
+    <i class="fas fa-cog"></i> {% trans "Django admin paneli" %}
+  </a>
+  <a href="{% url 'news_create' %}" class="bn-btn bn-btn--primary">
+    <i class="fas fa-plus"></i> {% trans "Yangilik qo'shish" %}
+  </a>
+</div>
+{% endblock %}
